@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Agente IA que busca notícias de Inteligência Artificial e gera criativos para o nicho de eventos: Blog, Feed e Stories.">
+  <title>AI News Agent | Criativos de IA para Eventos</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="app-header">
+    <div class="header-content">
+      <div class="logo-section">
+        <div class="logo-icon">🤖</div>
+        <div class="logo-text">
+          <h1>AI News Agent</h1>
+          <span>Notícias de IA → Criativos para Eventos</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="btn-history" id="btnHistory">📁 Histórico</button>
+        <div class="api-key-section">
+          <div class="key-status" id="keyStatus" title="Gemini API"></div>
+          <input type="password" class="api-key-input" id="apiKeyInput" placeholder="Gemini API Key..." autocomplete="off">
+          <button class="btn-save-key" id="btnSaveKey">Salvar</button>
+        </div>
+        <div class="api-key-section">
+          <div class="key-status" id="openaiStatus" title="OpenAI API"></div>
+          <input type="password" class="api-key-input" id="openaiKeyInput" placeholder="OpenAI API Key..." autocomplete="off">
+          <button class="btn-save-key" id="btnSaveOpenai">Salvar</button>
+        </div>
+        <div class="api-key-section">
+          <div class="key-status" id="supaStatus" title="Supabase"></div>
+          <input type="text" class="api-key-input" id="supaUrlInput" placeholder="Supa URL..." style="width: 100px;">
+          <input type="password" class="api-key-input" id="supaKeyInput" placeholder="Supa Key..." style="width: 100px;">
+          <button class="btn-save-key" id="btnSaveSupa">Salvar DB</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- STATS -->
+  <section class="hero-section">
+    <div class="stats-grid">
+      <div class="stat-card total">
+        <div class="stat-icon">📰</div>
+        <div class="stat-value" id="statTotal">—</div>
+        <div class="stat-label">Total Notícias</div>
+      </div>
+      <div class="stat-card world">
+        <div class="stat-icon">🌍</div>
+        <div class="stat-value" id="statWorld">—</div>
+        <div class="stat-label">Mundo</div>
+      </div>
+      <div class="stat-card brasil">
+        <div class="stat-icon">🇧🇷</div>
+        <div class="stat-value" id="statBrasil">—</div>
+        <div class="stat-label">Brasil</div>
+      </div>
+      <div class="stat-card events">
+        <div class="stat-icon">✨</div>
+        <div class="stat-value" id="statGenerated">—</div>
+        <div class="stat-label">Criativos Gerados</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTROLS -->
+  <section class="controls-bar">
+    <div class="filter-tabs" id="filterTabs">
+      <button class="filter-tab active" data-filter="all">📰 Todas <span class="count" id="countAll">0</span></button>
+      <button class="filter-tab" data-filter="world">🌍 Mundo <span class="count" id="countWorld">0</span></button>
+      <button class="filter-tab" data-filter="brasil">🇧🇷 Brasil <span class="count" id="countBrasil">0</span></button>
+    </div>
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Buscar notícias...">
+    </div>
+    <button class="btn-refresh" id="btnRefresh"><span class="refresh-icon">🔄</span> Atualizar</button>
+  </section>
+
+  <!-- NEWS GRID -->
+  <main class="news-container">
+    <div class="news-grid" id="newsGrid"></div>
+  </main>
+
+  <!-- CREATIVE STUDIO (Full-screen) -->
+  <div class="studio-overlay" id="studioOverlay">
+    <div class="studio-panel">
+      <div class="studio-header">
+        <div class="studio-header-left">
+          <span style="font-size:1.3rem">🎨</span>
+          <h2>Estúdio Criativo</h2>
+        </div>
+        <button class="studio-close" id="studioClose">✕</button>
+      </div>
+
+      <aside class="studio-sidebar" id="studioSidebar">
+        <!-- Filled by JS -->
+      </aside>
+
+      <div class="studio-main" id="studioMain">
+        <div class="studio-tabs" id="studioTabs">
+          <button class="studio-tab blog active" data-tab="blog">📝 Blog</button>
+          <button class="studio-tab feed" data-tab="feed">📱 Feed</button>
+          <button class="studio-tab stories" data-tab="stories">📲 Stories</button>
+        </div>
+
+        <div class="studio-content-panel active" id="panelBlog">
+          <div id="blogContent">
+            <div class="gen-loading"><div class="dot-pulse"><div class="dot blog"></div><div class="dot blog"></div><div class="dot blog"></div></div><span class="gen-loading-text">Gerando post para Blog...</span></div>
+          </div>
+        </div>
+
+        <div class="studio-content-panel" id="panelFeed">
+          <div id="feedContent">
+            <div class="gen-loading"><div class="dot-pulse"><div class="dot feed"></div><div class="dot feed"></div><div class="dot feed"></div></div><span class="gen-loading-text">Gerando copy para Feed...</span></div>
+          </div>
+        </div>
+
+        <div class="studio-content-panel" id="panelStories">
+          <div id="storiesContent">
+            <div class="gen-loading"><div class="dot-pulse"><div class="dot stories"></div><div class="dot stories"></div><div class="dot stories"></div></div><span class="gen-loading-text">Gerando Stories...</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORY OVERLAY -->
+  <div class="history-overlay" id="historyOverlay">
+    <div class="history-panel">
+      <div class="history-header">
+        <h2>📁 Histórico de Criativos</h2>
+        <button class="studio-close" id="historyClose">✕</button>
+      </div>
+      <div class="history-body" id="historyBody"></div>
+    </div>
+  </div>
+
+  <!-- TOASTS -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- FOOTER -->
+  <footer class="app-footer">
+    <p>AI News Agent — Criativos inteligentes de IA para o nicho de eventos</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js"></script>
+</body>
+</html>
